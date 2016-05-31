@@ -858,11 +858,7 @@ public class IPluginManagerImpl extends IPluginManager.Stub {
 //                        Log.e(TAG, "reqFeature name=%s,flags=%s,glesVersion=%s", reqFeature.name, reqFeature.flags, reqFeature.getGlEsVersion());
 //                    }
 //                }
-                if (copyNativeLibs(mContext, apkfile, parser.getApplicationInfo(0)) < 0) {
-                    new File(apkfile).delete();
-                    return PackageManagerCompat.INSTALL_FAILED_NOT_SUPPORT_ABI;
-                }
-
+                copyNativeLibs(mContext, apkfile, parser.getApplicationInfo(0));
                 dexOpt(mContext, apkfile, parser);
                 mPluginCache.put(parser.getPackageName(), parser);
                 mActivityManagerService.onPkgInstalled(mPluginCache, parser, parser.getPackageName());
@@ -899,11 +895,7 @@ public class IPluginManagerImpl extends IPluginManager.Stub {
 //                        }
 //                    }
 
-                    if (copyNativeLibs(mContext, apkfile, parser.getApplicationInfo(0)) < 0) {
-                        new File(apkfile).delete();
-                        return PackageManagerCompat.INSTALL_FAILED_NOT_SUPPORT_ABI;
-                    }
-
+                    copyNativeLibs(mContext, apkfile, parser.getApplicationInfo(0));
                     dexOpt(mContext, apkfile, parser);
                     mPluginCache.put(parser.getPackageName(), parser);
                     mActivityManagerService.onPkgInstalled(mPluginCache, parser, parser.getPackageName());
@@ -986,9 +978,9 @@ public class IPluginManagerImpl extends IPluginManager.Stub {
         mContext.sendBroadcast(intent);
     }
 
-    private int copyNativeLibs(Context context, String apkfile, ApplicationInfo applicationInfo) throws Exception {
+    private void copyNativeLibs(Context context, String apkfile, ApplicationInfo applicationInfo) throws Exception {
         String nativeLibraryDir = PluginDirHelper.getPluginNativeLibraryDir(context, applicationInfo.packageName);
-        return NativeLibraryHelperCompat.copyNativeBinaries(new File(apkfile), new File(nativeLibraryDir));
+        NativeLibraryHelperCompat.copyNativeBinaries(new File(apkfile), new File(nativeLibraryDir));
     }
 
 
